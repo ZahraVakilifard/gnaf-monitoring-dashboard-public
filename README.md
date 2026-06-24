@@ -2,7 +2,7 @@
 
  
 
-#### Project Overview
+### Project Overview
 
 
 
@@ -13,7 +13,7 @@ This project provides an executive dashboard for monitoring organizational progr
 The dashboard enables stakeholders to evaluate task completion, service implementation, organizational rankings, and compliance metrics through interactive Power BI reports.
 
 
-#### Business Problem
+### Business Problem
 
 
 
@@ -46,7 +46,7 @@ Decision makers need a centralized view to:
 
 
 
-#### Data Sources
+### Data Sources
 
 
 
@@ -78,7 +78,7 @@ Data domains include:
 
 
 
-#### Data Model
+### Data Model
 
 
 
@@ -86,7 +86,7 @@ Star-schema inspired model:
 
 
 
-##### DimOrganization
+#### DimOrganization
 
 
 
@@ -110,7 +110,7 @@ Star-schema inspired model:
 
 
 
-##### KPIs
+#### KPIs
 
 
 
@@ -179,7 +179,7 @@ Comparative KPIs
 
 
 
-#### Dashboard Pages
+### Dashboard Pages
 
 
 
@@ -200,7 +200,7 @@ Comparative KPIs
 
 
 
-#### Technologies Used
+### Technologies Used
 
 
 
@@ -221,7 +221,7 @@ Comparative KPIs
 
  
 
-#### Screenshots
+### Screenshots
 
 
 
