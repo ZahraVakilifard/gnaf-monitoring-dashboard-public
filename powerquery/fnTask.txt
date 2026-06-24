@@ -1,0 +1,68 @@
+(sheetTable as table, organizationName as text) as table =>
+let
+    TaskRow = Table.Range(sheetTable, 9, 15),
+
+    PromotedHeaders = Table.PromoteHeaders(
+        TaskRow,
+        [PromoteAllScalars = true]
+    ),
+
+    RenamedColumns = Table.RenameColumns(
+        PromotedHeaders,
+        {
+            {"ردیف", "rowNumber"},
+            {"پیشرفت تکالیف مرتبط با تکمیل پایگاه اطلاعات مکانی", "task"},
+            {"درصد پیشرفت", "progress"},
+            {"وضعیت", "status"}
+        },
+        MissingField.Ignore
+    ), 
+
+    SelectedColumns = Table.SelectColumns(
+        RenamedColumns, 
+        {
+            "rowNumber",
+            "task",
+            "progress",
+            "status"
+        },
+        MissingField.UseNull
+    ),
+
+    RemovedEmptyTasks = Table.SelectRows(
+        SelectedColumns,
+        each [task] <> null and Text.Trim(Text.From([task])) <> ""
+    ),
+
+    AddedOrganization = Table.AddColumn(
+        RemovedEmptyTasks, 
+        "organization",
+        each organizationName,
+        type text
+    ),
+
+    ReorderedColumns = Table.ReorderColumns(
+        AddedOrganization,
+        {
+            "organization", 
+            "rowNumber",
+            "task",
+            "progress",
+            "status"
+        },
+        MissingField.UseNull
+    ),
+
+    ChangedTypes = Table.TransformColumnTypes(
+        ReorderedColumns,
+        {
+            {"organization", type text},
+            {"rowNumber", type number},
+            {"task", type text},
+            {"status", type text},
+            {"progress", type number}
+        }
+    )
+
+in
+    ChangedTypes

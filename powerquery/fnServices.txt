@@ -1,0 +1,67 @@
+(sheetTable as table, organizationName as text) as table =>
+let 
+    SerivcesRow = Table.Range(sheetTable, 28, 15),
+
+    PromotedHeaders = Table.PromoteHeaders(
+        SerivcesRow,
+        [PromoteAllScalars = true]
+    ),
+
+    RenamedColumns = Table.RenameColumns(
+        PromotedHeaders,
+        {
+            {"ردیف", "rowNumber"},
+            {"فهرست سامانه/خدمت", "serviceName"},
+            {"مرحله کاربست", "implementationStage"},
+            {"وضعیت", "status"},
+            {"ثبت کدپستی با فرآیند صحت‌سنجی در سامانه ارائه ", "postalCodeValidation"},
+            {"اتصال و همبندی کدپستی با شناسه یکتاهای سامانه", "postalCodeLinkage"},
+            {"امکان استعلام خدمت با کدپستی، مختصات جغرافیایی و شناسه یکتا", "inquiryAvailability"},
+            {"پیاده‌سازی ملاحظات امنیتی و ارائه خدمت بر بستر پنجره ملی دولت هوشمند", "securityCompliance"}
+        },
+        MissingField.Ignore
+    ),
+
+    SelectedColumns = Table.SelectColumns(
+        RenamedColumns,
+        {
+            "rowNumber",
+            "serviceName",
+            "implementationStage",
+            "status",
+            "postalCodeValidation",
+            "postalCodeLinkage",
+            "inquiryAvailability",
+            "securityCompliance"
+        },
+        MissingField.Ignore
+    ),
+
+    RemovedBlankRows = Table.SelectRows(
+        SelectedColumns,
+        each [serviceName] <> null and Text.Trim(Text.From([serviceName])) <> ""
+    ),
+
+    AddedOrganization = Table.AddColumn(
+        RemovedBlankRows,
+        "organization",
+        each organizationName,
+        type text
+    ),
+
+    ReorderedColumns = Table.ReorderColumns(
+        AddedOrganization,
+        {
+            "organization", 
+            "rowNumber",
+            "serviceName",
+            "implementationStage",
+            "status",
+            "postalCodeValidation",
+            "postalCodeLinkage",
+            "inquiryAvailability",
+            "securityCompliance"
+        }
+    )
+in
+    ReorderedColumns

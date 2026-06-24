@@ -1,0 +1,8 @@
+.DS_Store
+*.tmp
+*.bak
+
+data/*.xlsx
+data/*.xls
+data/raw/*.xlsx
+data/raw/*.xls

@@ -1,0 +1,57 @@
+(sheetTable as table, organizationName as text) as table =>
+let
+    Part1Row = Table.Range(sheetTable, 3, 2),
+
+    Part1Promoted = Table.PromoteHeaders(
+        Part1Row, 
+        [PromoteAllScalars = true]
+    ),
+
+    Part1MetricValue = Table.UnpivotOtherColumns(
+        Part1Promoted,
+        {},
+        "metric",
+        "value"
+    ),
+
+    Part2Row = Table.Range(sheetTable, 5, 2),
+    
+    Part2Promoted = Table.PromoteHeaders(
+        Part2Row,
+        [PromoteAllScalars = true]
+    ),
+
+    Part2MetricValue = Table.UnpivotOtherColumns(
+        Part2Promoted,
+        {},
+        "metric",
+        "value"
+    ),
+
+    Combined = Table.Combine({
+        Part1MetricValue, 
+        Part2MetricValue
+    }),
+     
+    AddedOrganization = Table.AddColumn(
+        Combined,
+        "organization",
+        each organizationName,
+        type text
+    ),
+
+    ReorderedColumns = Table.ReorderColumns(
+        AddedOrganization,
+        {"organization", "metric", "value"}
+    ),
+
+    ChangedTypes = Table.TransformColumnTypes(
+        ReorderedColumns,
+        {
+            {"organization", type text},
+            {"metric", type text}
+        }
+    )
+
+in 
+    ChangedTypes

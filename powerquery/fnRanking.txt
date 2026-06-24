@@ -1,0 +1,49 @@
+(sheetTable as table, organizationName as text) as table =>
+let
+    NationalRankRow = Table.Range(sheetTable, 46, 2),
+
+    NationalRankPromoted = Table.PromoteHeaders(
+        NationalRankRow,
+        [PromoteAllScalars = true]
+    ),
+
+    NationalRankMetricValue = Table.UnpivotOtherColumns(
+        NationalRankPromoted,
+        {},
+        "metric",
+        "value"
+    ),
+
+    EffortRankRow = Table.Range(sheetTable, 50, 2),
+
+    EffortRankPromoted = Table.PromoteHeaders(
+        EffortRankRow,
+        [PromoteAllScalars = true]
+    ),
+
+    EffortRankMetricValue = Table.UnpivotOtherColumns(
+        EffortRankPromoted,
+        {},
+        "metric",
+        "value"
+    ),
+
+    Combined = Table.Combine({
+        NationalRankMetricValue,
+        EffortRankMetricValue
+    }),
+
+    AddedOrganization = Table.AddColumn(
+        Combined,
+        "organization",
+        each organizationName,
+        type text
+    ),
+
+    ReorderedColumns = Table.ReorderColumns(
+        AddedOrganization,
+        {"organization", "metric", "value"}
+    )
+
+in 
+    ReorderedColumns

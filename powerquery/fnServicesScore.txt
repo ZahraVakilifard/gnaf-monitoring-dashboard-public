@@ -1,0 +1,64 @@
+(sheetTable as table, organizationName as text) as table =>
+let
+    WeightsRow = Table.Range(sheetTable, 27, 1),
+    WeightValues = Record.FieldValues(WeightsRow{0}),
+
+    postalWeight = Number.From(WeightValues{4}),
+    linkageWeight = Number.From(WeightValues{5}),
+    inquiryWeight = Number.From(WeightValues{6}),
+    securityWeight = Number.From(WeightValues{7}),
+
+    ScoresRow = Table.Range(sheetTable, 44, 1),
+    ScoreValues = Record.FieldValues(ScoresRow{0}),
+
+    postalScore = Number.From(ScoreValues{4}),
+    linkageScore = Number.From(ScoreValues{5}),
+    inquiryScore = Number.From(ScoreValues{6}),
+    securityScore = Number.From(ScoreValues{7}),
+
+    Result = Table.FromRecords({
+        [
+            organization = organizationName,
+
+            postalScore = postalScore,
+            postalWeight = postalWeight,
+            postalScoreText = Text.From(postalScore) & "/" & Text.From(postalWeight),
+
+            linkageScore = linkageScore,
+            linkageWeight = linkageWeight,
+            linkageScoreText = Text.From(linkageScore) & "/" & Text.From(linkageWeight),
+
+            inquiryScore = inquiryScore,
+            inquiryWeight = inquiryWeight,
+            inquiryScoreText = Text.From(inquiryScore) & "/" & Text.From(inquiryWeight),
+
+            securityScore = securityScore,
+            securityWeight = securityWeight,
+            securityScoreText = Text.From(securityScore) & "/" & Text.From(securityWeight)
+        ]
+    }),
+
+    ChangedTypes = Table.TransformColumnTypes(
+        Result,
+        {
+            {"organization", type text},
+
+            {"postalScore", type number},
+            {"postalWeight", type number},
+            {"postalScoreText", type text},
+
+            {"linkageScore", type number},
+            {"linkageWeight", type number},
+            {"linkageScoreText", type text},
+
+            {"inquiryScore", type number},
+            {"inquiryWeight", type number},
+            {"inquiryScoreText", type text},
+
+            {"securityScore", type number},
+            {"securityWeight", type number},
+            {"securityScoreText", type text}
+        }
+    )
+in
+    ChangedTypes

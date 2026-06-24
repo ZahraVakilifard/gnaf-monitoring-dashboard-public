@@ -1,0 +1,28 @@
+let
+    Source = Excel.Workbook(
+        File.Contents("C:\Users\zahra\Downloads\-4274111248941310205_1594600287981812(1).xlsx"),
+        null,
+        false
+    ),
+
+    SheetsOnly = Table.SelectRows(
+        Source,
+        each [Kind] = "Sheet"
+    ),
+
+
+    RemovedExtraSheets = Table.SelectRows(
+        SheetsOnly,
+        each not List.Contains(
+            {"رنگ و وضعیت" ,"راهنما" ,"Sheet1"},
+            Text.Trim([Name])
+        )
+    ),
+
+
+    KeptColumns = Table.SelectColumns(
+        RemovedExtraSheets,           
+        {"Name", "Data"}
+    )
+in
+    KeptColumns
